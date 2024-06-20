@@ -1,6 +1,6 @@
 #version 330
 
-#define NUM_LIGHTS 4   ///< Indicate the desired number of lights
+#define NUM_LIGHTS 4   
 
 #define DIRLIGHT  0
 #define OMNILIGHT 1
@@ -16,21 +16,21 @@ flat in mat3 TBN;
 out vec4 outColor;
 
 struct Light {
-    sampler2D shadowMap;      ///< Sampler for the shadow map texture
-    vec3 position;            ///< Position of the light in world coordinates
-    vec3 direction;           ///< Direction vector of the light (for directional and spotlights)
-    vec3 diffuse;             ///< Diffuse color of the light
-    vec3 specular;            ///< Specular color of the light
-    float innerCutOff;        ///< Inner cutoff angle for spotlights (cosine of the angle)
-    float outerCutOff;        ///< Outer cutoff angle for spotlights (cosine of the angle)
-    float constant;           ///< Constant attenuation factor
-    float linear;             ///< Linear attenuation factor
-    float quadratic;          ///< Quadratic attenuation factor
-    float shadowMapTxlSz;     ///< Texel size of the shadow map
-    float depthBias;          ///< Bias value to avoid self-shadowing artifacts
-    lowp int type;            ///< Type of the light (e.g., point, directional, spotlight)
-    lowp int shadow;          ///< Indicates if the light casts shadows (1 for true, 0 for false)
-    lowp int enabled;         ///< Indicates if the light is active (1 for true, 0 for false)
+    sampler2D shadowMap;
+    vec3 position;
+    vec3 direction;
+    vec3 diffuse;
+    vec3 specular;
+    float innerCutOff;
+    float outerCutOff;
+    float constant;
+    float linear;
+    float quadratic;
+    float shadowMapTxlSz;
+    float depthBias;
+    lowp int type;
+    lowp int shadow;
+    lowp int enabled;
 };
 
 uniform Light lights[NUM_LIGHTS];

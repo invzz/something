@@ -1,6 +1,6 @@
 #version 330
 
-#define NUM_LIGHTS 4   ///< Indicate the desired number of lights
+#define NUM_LIGHTS 4  // can be changed! 
 
 in vec3 vertexPosition;
 in vec2 vertexTexCoord;
