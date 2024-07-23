@@ -5,7 +5,8 @@
 #include <rlgl.h>
 #include <raymath.h>
 #include "common.hh"
-#include "lightManager.hh"
+#include "lightService.hh"
+#include "skyboxService.hh"
 
 class graphics
 {
@@ -62,14 +63,17 @@ class graphics
 
     // Add shaders
 
-    Shader *light = (Shader *)malloc(sizeof(Shader));
-    Shader *depth = (Shader *)malloc(sizeof(Shader));
+    Shader *light  = (Shader *)malloc(sizeof(Shader));
+    Shader *depth  = (Shader *)malloc(sizeof(Shader));
+    Shader *skybox = (Shader *)malloc(sizeof(Shader));
 
-    *light = LoadShader(SHADER_DIR "lights.vs", SHADER_DIR "lights.fs");
-    *depth = LoadShader(0, SHADER_DIR "depth.fs");
+    *light  = LoadShader(SHADER_DIR "lights.vs", SHADER_DIR "lights.fs");
+    *depth  = LoadShader(0, SHADER_DIR "depth.fs");
+    *skybox = LoadShader(SHADER_DIR "skybox.vs", SHADER_DIR "skybox.fs");
 
     addShader(light);
     addShader(depth);
+    addShader(skybox);
 
     ls = new LightService(GetShader(LIGHT_SHADER));
 
@@ -95,6 +99,8 @@ class graphics
   Shader *GetLightShader() { return GetShader(LIGHT_SHADER); }
 
   Shader *GetDepthShader() { return GetShader(DEPTH_SHADER); }
+
+  Shader *GetSkyboxShader() { return GetShader(SKYBOX_SHADER); }
 
   void RemoveShader(Shader *shader)
   {

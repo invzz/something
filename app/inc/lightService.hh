@@ -7,7 +7,7 @@
 #include "light.hh"
 #include "ecamera.hh"
 
-class LightManagerLocs
+class LightServiceLocs
 {
   public:
   int colSpecular;
@@ -17,7 +17,10 @@ class LightManagerLocs
   int useSpecularMap;
   int useNormalMap;
 
-  explicit LightManagerLocs(Shader *shader) { init(shader); }
+  explicit LightServiceLocs(Shader *shader)
+  {
+    // init(shader);
+  }
 
   void init(Shader *shader)
   {
@@ -34,7 +37,7 @@ class LightService
 {
   std::vector<Light *> lights;
   Shader              *shader;
-  LightManagerLocs    *locs;
+  LightServiceLocs    *locs;
   Vector3              colSpecular;
   Vector3              colAmbient;
   Vector3              viewPos;
@@ -45,7 +48,7 @@ class LightService
   int                  selectedLight = 0;
 
   public:
-  explicit LightService(Shader *shader) : shader(shader), locs(new LightManagerLocs(shader)) { init(); }
+  explicit LightService(Shader *shader) : shader(shader), locs(new LightServiceLocs(shader)) { init(); }
 
   ~LightService()
   {

@@ -19,7 +19,7 @@
 		"C_Cpp.intelliSenseEngineFallback": "disabled",
 		"editor.formatOnType": true,
 		"output.smartScroll.enabled": true,
-		"cmake.outputLogEncoding": "build :: ",
+		"cmake.outputLogEncoding": "[ build ] :: ",
 		"terminal.integrated.lineHeight": 1,
 		"terminal.integrated.fontFamily": "Fira Code",
 		"terminal.integrated.fontSize": 10,
@@ -154,6 +154,6 @@
 		"files.associations": {
 			
 		},
-		"cmake.options.statusBarVisibility": "visible",
+		"cmake.options.statusBarVisibility": "compact",
 	}
 }

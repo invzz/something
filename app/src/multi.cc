@@ -3,7 +3,7 @@
 #include "common.hh"
 #include "ecamera.hh"
 
-#include "lightManager.hh"
+#include "lightService.hh"
 
 Model ground;
 Model Knot;

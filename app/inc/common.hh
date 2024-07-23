@@ -21,8 +21,12 @@
 #define SHADOW_MAP_SIZE 2048
 
 // shader types
-#define LIGHT_SHADER 0
-#define DEPTH_SHADER 1
+typedef enum shaderType
+{
+  LIGHT_SHADER  = 0,
+  DEPTH_SHADER  = 1,
+  SKYBOX_SHADER = 2,
+} shaderType;
 
 #ifdef USE_NVIDIA
 extern "C"

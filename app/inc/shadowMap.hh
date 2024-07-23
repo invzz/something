@@ -25,7 +25,7 @@ class ShadowMap
 
   void Load()
   {
-    this->id = rlLoadFramebuffer(this->width, this->height);
+    this->id = rlLoadFramebuffer();
 
     rlEnableFramebuffer(this->id);
 
