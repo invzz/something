@@ -2,8 +2,8 @@
 #include <rlgl.h>
 #include "shadowMap.hh"
 
-#define SCREEN_WIDTH  1600
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH  1200
+#define SCREEN_HEIGHT 720
 #define CONFIG_FLAGS  FLAG_MSAA_4X_HINT //| FLAG_FULLSCREEN_MODE
 
 // Aspect ratio
@@ -23,9 +23,10 @@
 // shader types
 typedef enum shaderType
 {
-  LIGHT_SHADER  = 0,
-  DEPTH_SHADER  = 1,
-  SKYBOX_SHADER = 2,
+  LIGHT_SHADER   = 0,
+  DEPTH_SHADER   = 1,
+  SKYBOX_SHADER  = 2,
+  CUBEMAP_SHADER = 3
 } shaderType;
 
 #ifdef USE_NVIDIA

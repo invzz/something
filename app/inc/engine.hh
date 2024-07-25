@@ -12,6 +12,7 @@ class Engine
   EngineOptions o;
   graphics     *g;
   bool          drawShadowMap = false;
+  bool          drawSkybox    = true;
 
   public:
   ECamera *c;
@@ -28,9 +29,12 @@ class Engine
 
   void ToggleShadowMap() { drawShadowMap = !drawShadowMap; }
 
+  void ToggleSkybox() { drawSkybox = !drawSkybox; }
+
   void AddActions()
   {
-    if(IsKeyPressed(KEY_F1)) { ToggleShadowMap(); }
+    if(IsKeyPressed(KEY_O)) { ToggleShadowMap(); }
+    if(IsKeyPressed(KEY_I)) { ToggleSkybox(); }
 
     c->AddActions();
     g->AddActions();
@@ -54,11 +58,13 @@ class Engine
         AddActions();
         Update();
         g->DoShadowMapping(drawFunc);
+
         BeginDrawing();
         {
           ClearBackground(BLACK);
           c->Begin();
           {
+            if(drawSkybox) { g->DrawSkybox(); }
             g->UpdateShadowMaps();
             drawFunc(g->GetLightShader());
             g->DrawLights();

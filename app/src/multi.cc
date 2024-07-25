@@ -3,8 +3,6 @@
 #include "common.hh"
 #include "ecamera.hh"
 
-#include "lightService.hh"
-
 Model ground;
 Model Knot;
 Model cube;

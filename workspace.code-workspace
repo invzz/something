@@ -1,10 +1,8 @@
 {
-	"folders": [
-		{
-			"name": "root",
-			"path": "./"
-		},
-	],
+	"folders": [{
+		"name": "root",
+		"path": "./"
+	}, ],
 	"settings": {
 		"cmake.cmakePath": "cmake",
 		"explorer.sortOrder": "type",
@@ -52,8 +50,7 @@
 		// },
 		"editor.tokenColorCustomizations": {
 			"comments": "#627264",
-			"textMateRules": [
-				{
+			"textMateRules": [{
 					"scope": "markup.other.log.error",
 					"settings": {
 						"foreground": "#FF0000"
@@ -152,7 +149,10 @@
 			"editorGroupHeader.tabsBorder": "#393934"
 		},
 		"files.associations": {
-			
+			"xutility": "cpp",
+			"functional": "cpp",
+			"new": "cpp",
+			"vector": "cpp"
 		},
 		"cmake.options.statusBarVisibility": "compact",
 	}

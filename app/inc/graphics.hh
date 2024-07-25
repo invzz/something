@@ -11,10 +11,12 @@
 class graphics
 {
   private:
-  void                          *w;  // window handle
-  EngineOptions                 *o;  // engine options
-  std::vector<Shader *>          s;  // shaders
-  LightService                  *ls; // light service
+  void                 *w;  // window handle
+  EngineOptions        *o;  // engine options
+  std::vector<Shader *> s;  // shaders
+  LightService         *ls; // light service
+  skyBoxService        *sb; // skybox service
+
   std::function<void(Shader *)> &drawScene;
 
   Shader *GetShader(int index) { return s[index]; } // get shader by index
@@ -63,19 +65,24 @@ class graphics
 
     // Add shaders
 
-    Shader *light  = (Shader *)malloc(sizeof(Shader));
-    Shader *depth  = (Shader *)malloc(sizeof(Shader));
-    Shader *skybox = (Shader *)malloc(sizeof(Shader));
+    Shader *light   = (Shader *)malloc(sizeof(Shader));
+    Shader *depth   = (Shader *)malloc(sizeof(Shader));
+    Shader *skybox  = (Shader *)malloc(sizeof(Shader));
+    Shader *cubemap = (Shader *)malloc(sizeof(Shader));
 
     *light  = LoadShader(SHADER_DIR "lights.vs", SHADER_DIR "lights.fs");
     *depth  = LoadShader(0, SHADER_DIR "depth.fs");
     *skybox = LoadShader(SHADER_DIR "skybox.vs", SHADER_DIR "skybox.fs");
+    *cubemap = LoadShader(SHADER_DIR "cubemap.vs", SHADER_DIR "cubemap.fs");
 
     addShader(light);
     addShader(depth);
     addShader(skybox);
+    addShader(cubemap);
 
     ls = new LightService(GetShader(LIGHT_SHADER));
+
+    sb = new skyBoxService(SKYBOX_DIR "skybox.png", GetShader(SKYBOX_SHADER), GetShader(CUBEMAP_SHADER));
 
     if(w == nullptr) { TraceLog(LOG_ERROR, "FAILED TO CREATE WINDOW"); }
 
@@ -150,6 +157,8 @@ class graphics
   void AddActions() { ls->AddActions(); }
 
   void DrawLights() { ls->DrawLights(); }
+
+  void DrawSkybox() { sb->DrawSkybox(); }
 
   void DrawActions(float X, float Y) { ls->DrawActions(X, Y); }
 };
