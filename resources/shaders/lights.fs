@@ -1,10 +1,25 @@
 #version 330
 
-#define NUM_LIGHTS 4   
+#define NUM_LIGHTS 4
+#define NUM_MATERIAL_MAPS       7
+#define NUM_MATERIAL_CUBEMAPS   2   
 
 #define DIRLIGHT  0
 #define OMNILIGHT 1
 #define SPOTLIGHT 2
+
+#define ALBEDO                  0
+#define METALNESS               1
+#define NORMAL                  2
+#define ROUGHNESS               3
+#define OCCLUSION               4
+#define EMISSION                5
+#define HEIGHT                  6
+
+#define CUBEMAP                 0
+#define IRRADIANCE              1
+
+#define PI 3.1415926535897932384626433832795028
 
 in vec4 shadowPos[NUM_LIGHTS];
 in vec3 fragPosition;
@@ -14,6 +29,20 @@ in vec4 fragColor;
 flat in mat3 TBN;
 
 out vec4 outColor;
+
+struct MaterialMap {
+    sampler2D texture;
+    mediump vec4 color;
+    mediump float value;
+    lowp int isactive;
+};
+
+struct MaterialCubemap {
+    samplerCube texture;
+    mediump vec4 color;
+    mediump float value;
+    lowp int isactive;
+};
 
 struct Light {
     sampler2D shadowMap;
@@ -33,7 +62,12 @@ struct Light {
     lowp int enabled;
 };
 
+uniform MaterialCubemap cubemaps[NUM_MATERIAL_CUBEMAPS];
+uniform MaterialMap maps[NUM_MATERIAL_MAPS];
 uniform Light lights[NUM_LIGHTS];
+
+uniform lowp int parallaxMinLayers;
+uniform lowp int parallaxMaxLayers;
 
 uniform lowp int useSpecularMap;
 uniform lowp int useNormalMap;
@@ -77,6 +111,67 @@ float ShadowCalc(int i) {
 
 vec3 gammaCorrection(vec3 colour, float gamma) {
     return pow(colour, vec3(1. / gamma));
+}
+
+float SchlickFresnel(float u) {
+    float m = 1.0 - u;
+    float m2 = m * m;
+    return m2 *
+    m2 * m; // pow(m,5)
+}
+
+float DistributionGGX(float cosTheta, float alpha) {
+    float a = cosTheta * alpha;
+    float k = alpha / (1.0 - cosTheta * cosTheta + a * a);
+    return k * k * (1.0 / PI);
+}
+
+// From Earl Hammon, Jr. PBR Diffuse Lighting for GGX+Smith Microsurfaces
+float GeometrySchlickGGX(float NdotV, float k) {
+    return NdotV / (NdotV * (1.0 - k) + k);
+}
+
+// SEE: https://www.gdcvault.com/play/1024478/PBR-Diffuse-Lighting-for-GGX
+float GeometrySmith(float NdotL, float NdotV, float alpha) {
+    return 0.5 / mix(2.0 * NdotL * NdotV, NdotL + NdotV, alpha);
+}
+
+vec3 ComputeF0(float metallic, float specular, vec3 albedo) {
+    float dielectric = 0.16 * specular * specular;
+    // use albedo*metallic as colored specular reflectance at 0 angle for metallic materials
+    // SEE: https://google.github.io/filament/Filament.md.html
+    return mix(vec3(dielectric), albedo, vec3(metallic));
+}
+
+vec2 Parallax(vec2 uv, vec3 V) {
+    float height = 1.0 - texture(maps[HEIGHT].texture, uv).r;
+    return uv - vec2(V.xy / V.z) * height * maps[HEIGHT].value;
+}
+
+vec2 DeepParallax(vec2 uv, vec3 V) {
+    float numLayers = mix(float(parallaxMaxLayers), float(parallaxMinLayers), abs(dot(vec3(0.0, 0.0, 1.0), V)));
+    
+    float layerDepth = 1.0 / numLayers;
+    float currentLayerDepth = 0.0;
+    
+    vec2 P = V.xy / V.z * maps[HEIGHT].value;
+    vec2 deltaTexCoord = P / numLayers;
+    
+    vec2 currentUV = uv;
+    float currentDepthMapValue = 1.0 - texture(maps[HEIGHT].texture, currentUV).y;
+    
+    while(currentLayerDepth < currentDepthMapValue) {
+        currentUV += deltaTexCoord;
+        currentLayerDepth += layerDepth;
+        currentDepthMapValue = 1.0 - texture(maps[HEIGHT].texture, currentUV).y;
+    }
+    
+    vec2 prevTexCoord = currentUV - deltaTexCoord;
+    float afterDepth = currentDepthMapValue + currentLayerDepth;
+    float beforeDepth = 1.0 - texture(maps[HEIGHT].texture, prevTexCoord).y - currentLayerDepth - layerDepth;
+    
+    float weight = afterDepth / (afterDepth - beforeDepth);
+    return prevTexCoord * weight + currentUV * (1.0 - weight);
 }
 
 void main() {

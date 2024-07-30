@@ -144,11 +144,11 @@ class graphics
   }
 
   // update func
-  void Update(Vector3 viewPos) { ls->Update(viewPos); }
+  void Update(Vector3 viewPos) { ls->update(viewPos); }
 
   void DoShadowMapping(std::function<void(Shader *)> &scene) { ls->DoShadowMapping(scene); }
 
-  void UpdateShadowMaps() { ls->UpdateShadowMaps(); }
+  void UpdateShadowMaps() { ls->updateShadows(); }
 
   // draw func
   void SetScene(std::function<void(Shader *)> &scene) { drawScene = scene; }
@@ -158,14 +158,13 @@ class graphics
 
   void CreatePointLight(Vector3 pos, Vector3 targ, Color color, float rotationX) { ls->CreatePointLight(pos, targ, color, rotationX); }
 
-  void DrawShadowMaps() { ls->DrawShadowMaps(); }
+  void DrawShadowMaps() { ls->drawShadows(); }
 
   void AddActions() { ls->AddActions(); }
 
-  void DrawLights() { ls->DrawLights(); }
+  void DrawLights() { ls->draw(); }
 
-  void DrawSkybox() { sb->DrawSkybox(); }
+  void DrawSkybox() { sb->draw(); }
 
   void DrawActions(float X, float Y) { ls->DrawActions(X, Y); }
 };
-

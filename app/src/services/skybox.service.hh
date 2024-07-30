@@ -16,10 +16,11 @@ class SkyboxService
   bool           useHDR = false;
   Mesh           cube;
   Model          skybox;
-  void           setHDR(int *useHDR) { SetShaderValue(*skyboxShader, skyboxLocs->doGamma, useHDR, SHADER_UNIFORM_INT); }
-  void           setEnvironmentMap(int *value) { SetShaderValue(*skyboxShader, skyboxLocs->environmentMap, value, SHADER_UNIFORM_INT); }
-  void           setEquirectangularMap(int *value) { SetShaderValue(*cubemapShader, cubeLocs->equirectangularMap, value, SHADER_UNIFORM_INT); }
-  void           LoadSkyBox(Image *img)
+
+  void setHDR(int *useHDR) { SetShaderValue(*skyboxShader, skyboxLocs->doGamma, useHDR, SHADER_UNIFORM_INT); }
+  void setEnvironmentMap(int *value) { SetShaderValue(*skyboxShader, skyboxLocs->environmentMap, value, SHADER_UNIFORM_INT); }
+  void setEquirectangularMap(int *value) { SetShaderValue(*cubemapShader, cubeLocs->equirectangularMap, value, SHADER_UNIFORM_INT); }
+  void load(Image *img)
   {
     setEnvironmentMap((int[1]){MATERIAL_MAP_CUBEMAP});
     setHDR((int[1]){useHDR ? 1 : 0});
@@ -78,18 +79,26 @@ class SkyboxService
     skyboxLocs->init(skyboxShader);
     cubeLocs->init(cubemapShader);
     Image img = LoadImage(filename);
-    LoadSkyBox(&img);
+    load(&img);
     skybox.materials[0].shader                             = *skyboxShader;
     skybox.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = cubeMap;
     UnloadImage(img);
   };
-  void LoadSkyBox(const char *filename)
+
+  void load(const char *filename)
   {
     Image img = LoadImage(filename);
-    LoadSkyBox(&img);
+    load(&img);
     UnloadImage(img);
   }
-  void DrawSkybox()
+
+  void unload()
+  {
+    UnloadTexture(cubeMap);
+    UnloadTexture(IrradMap);
+  }
+
+  void draw()
   {
     rlDisableBackfaceCulling();
     rlDisableDepthMask();
@@ -97,6 +106,14 @@ class SkyboxService
     rlEnableBackfaceCulling();
     rlEnableDepthMask();
   }
+
   void AddActions() {}
-  ~SkyboxService() {}
+
+  ~SkyboxService()
+  {
+    unload();
+    UnloadModel(skybox);
+    delete skyboxLocs;
+    delete cubeLocs;
+  }
 };

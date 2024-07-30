@@ -142,12 +142,12 @@ class LightService
       }
   }
 
-  void DrawShadowMaps() const
+  void drawShadows() const
   {
     for(const auto &light : lights) { light->DrawShadowMap(); }
   }
 
-  void DrawLights() const
+  void draw() const
   {
     for(const auto &light : lights)
       {
@@ -155,12 +155,12 @@ class LightService
       }
   }
 
-  void UpdateShadowMaps() const
+  void updateShadows() const
   {
     for(const auto &light : lights) { light->UpdateShadowMap(); }
   }
 
-  void Update(Vector3 viewPos)
+  void update(Vector3 viewPos)
   {
     for(auto &light : lights)
       {
