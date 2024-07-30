@@ -1,7 +1,5 @@
 #include <raylib.h>
-#include "engine.hh"
-#include "common.hh"
-#include "CameraService.hh"
+#include "engine.model.hh"
 
 Model ground;
 Model Knot;

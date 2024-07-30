@@ -4,6 +4,8 @@ set(APP_NAME something)
 
 include_directories(src/models)
 include_directories(src/services)
+include_directories(src/locations)
+include_directories(src/config)
 
 add_executable(${APP_NAME} src/multi.cc )
 
