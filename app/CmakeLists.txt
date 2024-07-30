@@ -1,17 +1,19 @@
 cmake_minimum_required(VERSION 3.29)
 
 set(APP_NAME something)
-include_directories(inc)
+
+include_directories(src/models)
+include_directories(src/services)
+
 add_executable(${APP_NAME} src/multi.cc )
-add_executable(${APP_NAME}-skybox src/skybox.cc )
 
 target_link_libraries(${APP_NAME} PRIVATE raylib  )
-target_link_libraries(${APP_NAME}-skybox PRIVATE raylib  )
+
 add_compile_definitions(-DRES_DIR="${RES_DIR}")
 add_compile_definitions(-DAPP_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 add_compile_definitions(-DSHADER_DIR="${PROJECT_SOURCE_DIR}/resources/shaders/")
 add_compile_definitions(-DTEXTURE_DIR="${PROJECT_SOURCE_DIR}/resources/textures/")
-add_compile_definitions(-DSKYBOX_DIR="${PROJECT_SOURCE_DIR}/resources/skybox/")
+add_compile_definitions(-DSKYBOX_DIR="${PROJECT_SOURCE_DIR}/resources/skybox/sky/")
 # uncomment to use nvidia gpu
 add_compile_definitions(-DUSE_NVIDIA)
 add_compile_definitions(-DPLATFORM_DESKTOP)

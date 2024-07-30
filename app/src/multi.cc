@@ -1,7 +1,7 @@
 #include <raylib.h>
 #include "engine.hh"
 #include "common.hh"
-#include "ecamera.hh"
+#include "CameraService.hh"
 
 Model ground;
 Model Knot;
@@ -19,7 +19,7 @@ void TestScene(Shader *s)
       Knot.materials[0].shader   = *s;
       cube.materials[0].shader   = *s;
     }
-  DrawModel(ground, (Vector3){0, -0.5, 0}, 2.0f, WHITE);
+  // DrawModel(ground, (Vector3){0, -0.5, 0}, 2.0f, WHITE);
   DrawModel(cube, (Vector3){0, 0.5, 0}, 1.0f, BLUE);
   DrawModel(Knot, (Vector3){2, 0.5, 0}, 0.2f, RED);
   DrawModel(sphere, (Vector3){-2, 0.5, 0}, 1.0f, YELLOW);
