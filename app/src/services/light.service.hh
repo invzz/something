@@ -111,8 +111,8 @@ class LightService
 
     light->SetId(lightCount);
     light->SetXRotation(xRot);
-    light->SetDiffuseColor(normalizedColor);
-    light->SetSpecularColor(normalizedColor);
+    light->SetColor(normalizedColor);
+    light->SetSpecular(normalizedColor);
     light->SetPosition(pos);
     light->SetTarget(target);
     light->SetInnerCutOff(15.5f);
@@ -169,7 +169,7 @@ class LightService
             CameraService *camera = light->GetCamera();
             light->RotateAroundTarget(light->GetAngle(), 0.0f);
             light->UpdateVpMatrix();
-            light->SetVpMatrix(light->GetVpMatrix());
+            light->SetMatLight(light->GetVpMatrix());
           }
       }
     SetViewPos(viewPos);

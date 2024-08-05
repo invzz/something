@@ -17,6 +17,7 @@ class CameraService
   public:
   Matrix view;
   Matrix projection;
+  
   // negative ar means that the aspect ratio will be calculated from the screen width and height
   CameraService(Vector3 position, Vector3 target, Vector3 up, float fovy, int type, float ar = -1.0f)
   {
@@ -39,12 +40,14 @@ class CameraService
     orientation  = QuaternionMultiply(orientation, q);
     orientation  = QuaternionNormalize(orientation);
   }
+  
   void Zoom(float amount)
   {
     Vector3 direction = Vector3Subtract(camera.target, camera.position);
     direction         = Vector3Normalize(direction);
     camera.position   = Vector3Add(camera.position, Vector3Scale(direction, amount));
   }
+  
   void RotateAroundTarget(float dx, float dy)
   {
     // Calculate right and up vectors
@@ -68,6 +71,7 @@ class CameraService
     // Update camera position
     camera.position = Vector3Subtract(camera.target, forward);
   }
+  
   void Pan(float dx, float dy)
   {
     Vector3 right = Vector3CrossProduct(camera.up, Vector3Subtract(camera.target, camera.position));
@@ -79,6 +83,7 @@ class CameraService
 
     camera.target = Vector3Add(camera.position, Vector3Subtract(camera.target, camera.position));
   }
+  
   void Update()
   {
     Matrix  rotationMatrix = QuaternionToMatrix(orientation);
@@ -97,7 +102,9 @@ class CameraService
     // Update projection matrix
     UpdateProjectionMatrix();
   }
+  
   void BeginMode3D() { ::BeginMode3D(camera); }
+  
   void EndMode3D() { ::EndMode3D(); }
 
   void SetTarget(Vector3 target)
@@ -105,11 +112,13 @@ class CameraService
     camera.target = target;
     Update();
   }
+  
   void SetPosition(Vector3 position)
   {
     camera.position = position;
     Update();
   }
+  
   void Begin()
   {
     rlDrawRenderBatchActive();

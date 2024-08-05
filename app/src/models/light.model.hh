@@ -15,11 +15,13 @@ class Light
   ShadowMap     *shadowMap;
   Shader        *shader;
   CameraService *camera;
-  Matrix         vpMatrix;
+  Matrix         matLight;
   Vector3        position       = {0.0f, 0.0f, 0.0f};
   Vector3        direction      = {0.0f, 0.0f, 0.0f};
-  Vector3        diffuse        = {1.0f, 1.0f, 1.0f};
+  Vector3        color          = {1.0f, 1.0f, 1.0f};
+  float          energy         = 0.0f;
   Vector3        specular       = {1.0f, 1.0f, 1.0f};
+  float          size           = 0.0f;
   float          innerCutOff    = 0.0f;
   float          outerCutOff    = 0.0f;
   float          constant       = 0.0f;
@@ -35,7 +37,7 @@ class Light
 
   public:
   explicit Light(Shader *shader, int id = 0)
-      : shader(shader), id(id), shadowMap(new ShadowMap(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE)),
+      : shader(shader), id(id), shadowMap(new ShadowMap()),
         camera(new CameraService({1.0f, 2.0f, 4.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, 90.0f, CAMERA_PERSPECTIVE, 1))
   {
     shadowMapTxlSz = 1.0f / SHADOW_MAP_SIZE;
@@ -57,13 +59,19 @@ class Light
 
   void SetXRotation(float rotation) { xRotation = rotation; }
 
-  void SetDiffuseColor(Vector3 color)
+  void SetColor(Vector3 color)
   {
-    diffuse = color;
-    SetShaderValue(*shader, locs.diffuse, &diffuse, SHADER_UNIFORM_VEC3);
+    color = color;
+    SetShaderValue(*shader, locs.color, &color, SHADER_UNIFORM_VEC3);
   }
 
-  void SetSpecularColor(Vector3 color)
+  void SetEnergy(float energy)
+  {
+    this->energy = energy;
+    SetShaderValue(*shader, locs.energy, &energy, SHADER_UNIFORM_FLOAT);
+  }
+
+  void SetSpecular(Vector3 color)
   {
     specular = color;
     SetShaderValue(*shader, locs.specular, &specular, SHADER_UNIFORM_VEC3);
@@ -149,23 +157,27 @@ class Light
     camera->SetTarget(target);
   }
 
-  void SetVpMatrix(Matrix matrix)
+  void SetMatLight(Matrix matrix)
   {
-    vpMatrix = matrix;
-    SetShaderValueMatrix(*shader, locs.vpMatrix, matrix);
+    matLight = matrix;
+    SetShaderValueMatrix(*shader, locs.matLight, matrix);
   }
 
-  // Updaters
+  void SetSize(float size)
+  {
+    this->size = size;
+    SetShaderValue(*shader, locs.size, &size, SHADER_UNIFORM_FLOAT);
+  }
+
   void UpdateVpMatrix()
   {
     camera->Update();
-    vpMatrix = MatrixMultiply(camera->view, camera->projection);
+    matLight = MatrixMultiply(camera->view, camera->projection);
   }
 
   void UpdateShadowMap() { SetShaderValueTexture(*shader, locs.shadowMap, shadowMap->texture); }
 
-  // Getters
-  Matrix GetVpMatrix() const { return vpMatrix; }
+  Matrix GetVpMatrix() const { return matLight; }
 
   Vector3 GetPosition() const { return position; }
 
@@ -181,9 +193,9 @@ class Light
 
   float GetAngle() const { return xRotation; }
 
-  Color GetDiffuseColor() const
+  Color GetColor() const
   {
-    return {static_cast<unsigned char>(diffuse.x * 255), static_cast<unsigned char>(diffuse.y * 255), static_cast<unsigned char>(diffuse.z * 255), 255};
+    return {static_cast<unsigned char>(color.x * 255), static_cast<unsigned char>(color.y * 255), static_cast<unsigned char>(color.z * 255), 255};
   }
 
   bool IsEnabled() const { return enabled == 1; }
@@ -207,7 +219,7 @@ class Light
   void Draw(int selected) const
   {
     if(id == selected)
-      DrawSphere(position, 0.3f, GetDiffuseColor());
+      DrawSphere(position, 0.3f, GetColor());
     else
       DrawCubeWires(position, 0.3, 0.3, 0.3, Color{255, 255, 255, 50});
   }

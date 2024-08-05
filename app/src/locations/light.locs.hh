@@ -1,13 +1,20 @@
 #pragma once
+
+#include "light.attribute.locs.hh"
+#include "light.fragment.locs.hh"
+#include "light.vertex.locs.hh"
+
 class LightLocs
 {
   public:
-  int vpMatrix;
+  int matLight;
   int shadowMap;
   int position;
   int direction;
-  int diffuse;
+  int color;
+  int energy;
   int specular;
+  int size;
   int innerCutOff;
   int outerCutOff;
   int constant;
@@ -19,14 +26,20 @@ class LightLocs
   int shadow;
   int enabled;
 
+  lightFragmentShaderLocs fs;
+  LightVertexLocs         vs;
+  lightAttributeLocs      as;
+
   void init(int index, Shader *shader)
   {
-    vpMatrix       = GetShaderLocation(*shader, TextFormat("matLights[%d]", index));
+    matLight       = GetShaderLocation(*shader, TextFormat("matLights[%d]", index));
     shadowMap      = GetShaderLocation(*shader, TextFormat("lights[%d].shadowMap", index));
     position       = GetShaderLocation(*shader, TextFormat("lights[%d].position", index));
     direction      = GetShaderLocation(*shader, TextFormat("lights[%d].direction", index));
-    diffuse        = GetShaderLocation(*shader, TextFormat("lights[%d].diffuse", index));
+    color          = GetShaderLocation(*shader, TextFormat("lights[%d].color", index));
+    energy         = GetShaderLocation(*shader, TextFormat("lights[%d].energy", index));
     specular       = GetShaderLocation(*shader, TextFormat("lights[%d].specular", index));
+    size           = GetShaderLocation(*shader, TextFormat("lights[%d].size", index));
     innerCutOff    = GetShaderLocation(*shader, TextFormat("lights[%d].innerCutOff", index));
     outerCutOff    = GetShaderLocation(*shader, TextFormat("lights[%d].outerCutOff", index));
     constant       = GetShaderLocation(*shader, TextFormat("lights[%d].constant", index));
@@ -37,5 +50,8 @@ class LightLocs
     type           = GetShaderLocation(*shader, TextFormat("lights[%d].type", index));
     shadow         = GetShaderLocation(*shader, TextFormat("lights[%d].shadow", index));
     enabled        = GetShaderLocation(*shader, TextFormat("lights[%d].enabled", index));
+    fs.Init(shader);
+    vs.init(shader);
+    as.init(shader);
   }
 };

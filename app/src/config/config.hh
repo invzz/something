@@ -8,6 +8,7 @@
 #define NUM_LIGHTS      4
 #define SHADOW_MAP_SIZE 2048
 
+
 #ifdef USE_NVIDIA
 extern "C"
 {

@@ -25,6 +25,7 @@ void TestScene(Shader *s)
 
 int main()
 {
+
   EngineOptions options = (EngineOptions){"Engine", SCREEN_WIDTH, SCREEN_HEIGHT, ASPECT_RATIO};
   Engine        engine(options, TestScene);
   Texture2D     albedo = LoadTexture(TEXTURE_DIR "gold/albedo.png");

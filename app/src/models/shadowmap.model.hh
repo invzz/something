@@ -14,10 +14,10 @@ class ShadowMap
   int          height;
   Texture2D    texture;
 
-  ShadowMap(int width, int height)
+  ShadowMap()
   {
-    this->width  = width;
-    this->height = height;
+    this->width  = SHADOW_MAP_SIZE;
+    this->height = SHADOW_MAP_SIZE;
     Load();
   }
 

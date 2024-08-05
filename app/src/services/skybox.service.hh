@@ -71,8 +71,7 @@ class SkyboxService
 
   public:
   SkyboxService(const char *filename, Shader *skyboxShader, Shader *cubeShader, Shader *conv)
-      : skyboxShader(skyboxShader), skyboxLocs(new SkyBoxLocs(skyboxShader)), cubemapShader(cubeShader), cubeLocs(new cubemapLocs(cubeShader)),
-        convolutionShader(conv)
+      : skyboxShader(skyboxShader), skyboxLocs(new SkyBoxLocs()), cubemapShader(cubeShader), cubeLocs(new cubemapLocs()), convolutionShader(conv)
   {
     cube   = GenMeshCube(1.0f, 1.0f, 1.0f);
     skybox = LoadModelFromMesh(cube);

@@ -19,12 +19,14 @@ class graphics
   std::function<void(Shader *)> &drawScene;
 
   Shader *GetShader(int index) { return s[index]; } // get shader by index
+  
   Shader *GetShaderById(int id)
   {
     auto it = std::find_if(s.begin(), s.end(), [&](const Shader *shader) { return shader->id == id; });
     if(it != s.end()) { return *it; }
     return nullptr;
   }
+  
   static void LogColored(int msgType, const char *text, va_list args)
   {
     switch(msgType)
@@ -93,7 +95,6 @@ class graphics
 
   void free() { CloseWindow(); }
 
-  // window
   const char *GetTitle() const { return o->title; }
 
   int GetWindowWidth() const { return o->width; }
@@ -102,7 +103,6 @@ class graphics
 
   void *GetWindowHandle() const { return w; }
 
-  // shaders
   void addShader(Shader *shader) { s.push_back(shader); }
 
   Shader *GetLightShader() { return GetShader(LIGHT_SHADER); }
@@ -143,17 +143,14 @@ class graphics
     s.clear();
   }
 
-  // update func
   void Update(Vector3 viewPos) { ls->update(viewPos); }
 
   void DoShadowMapping(std::function<void(Shader *)> &scene) { ls->DoShadowMapping(scene); }
 
   void UpdateShadowMaps() { ls->updateShadows(); }
 
-  // draw func
   void SetScene(std::function<void(Shader *)> &scene) { drawScene = scene; }
 
-  // get draw func
   std::function<void(Shader *)> GetScene() { return drawScene; }
 
   void CreatePointLight(Vector3 pos, Vector3 targ, Color color, float rotationX) { ls->CreatePointLight(pos, targ, color, rotationX); }
