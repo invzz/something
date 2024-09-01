@@ -46,7 +46,7 @@ class Engine
     float speed = 0.05f;
 
     g->CreatePointLight((Vector3){5.0f, 2.0f, 5.0f}, Vector3Zero(), BLUE, speed);
-    g->CreatePointLight((Vector3){5.0f, 2.0f, -5.0f}, Vector3Zero(), RED, -speed / 2);
+    g->CreatePointLight((Vector3){5.0f, 2.0f, -5.0f}, Vector3Zero(), RED, -speed );
 
     auto drawFunc = g->GetScene();
 

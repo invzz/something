@@ -19,14 +19,14 @@ class graphics
   std::function<void(Shader *)> &drawScene;
 
   Shader *GetShader(int index) { return s[index]; } // get shader by index
-  
+
   Shader *GetShaderById(int id)
   {
     auto it = std::find_if(s.begin(), s.end(), [&](const Shader *shader) { return shader->id == id; });
     if(it != s.end()) { return *it; }
     return nullptr;
   }
-  
+
   static void LogColored(int msgType, const char *text, va_list args)
   {
     switch(msgType)
@@ -54,9 +54,10 @@ class graphics
     if(o->width == 0) o->width = 800;
     if(o->height == 0) o->height = 450;
 
+#ifdef PLATFORM_DESKTOP
     SetTraceLogCallback(LogColored);
-
     SetConfigFlags(CONFIG_FLAGS);
+#endif
 
     InitWindow(o->width, o->height, o->title);
 

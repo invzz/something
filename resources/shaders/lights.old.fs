@@ -1,4 +1,4 @@
-#version 330
+#version 300 es
 
 #define NUM_LIGHTS 4
 #define NUM_MATERIAL_MAPS       7

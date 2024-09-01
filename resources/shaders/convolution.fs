@@ -1,6 +1,9 @@
-#version 330
+#version 300 es
 
 #define PI 3.14159265359
+
+precision mediump float;
+precision mediump int;
 
 in vec3 fragPosition;
 out vec4 outColor;

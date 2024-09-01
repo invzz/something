@@ -1,5 +1,6 @@
-#version 330
-
+#version 300 es
+precision mediump float;
+precision mediump int;
 // Input vertex attributes (from vertex shader)
 in vec3 fragPosition;
 

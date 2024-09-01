@@ -1,5 +1,6 @@
-#version 330
-
+#version 300 es
+precision mediump float;
+precision mediump int;
 in vec3 fragPosition;
 out vec4 outColor;
 

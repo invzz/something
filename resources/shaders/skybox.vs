@@ -1,4 +1,4 @@
-#version 330
+#version 300 es
 
 in vec3 vertexPosition;
 out vec3 fragPosition;

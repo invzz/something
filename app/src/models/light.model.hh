@@ -11,29 +11,29 @@
 
 class Light
 {
-  int            id;
-  ShadowMap     *shadowMap;
-  Shader        *shader;
-  CameraService *camera;
-  Matrix         matLight;
-  Vector3        position       = {0.0f, 0.0f, 0.0f};
-  Vector3        direction      = {0.0f, 0.0f, 0.0f};
-  Vector3        color          = {1.0f, 1.0f, 1.0f};
-  float          energy         = 0.0f;
-  Vector3        specular       = {1.0f, 1.0f, 1.0f};
-  float          size           = 0.0f;
-  float          innerCutOff    = 0.0f;
-  float          outerCutOff    = 0.0f;
-  float          constant       = 0.0f;
-  float          linear         = 0.0f;
-  float          quadratic      = 0.0f;
-  float          shadowMapTxlSz = 0.0f;
-  float          depthBias      = 0.0f;
-  int            type;
-  int            shadow;
-  int            enabled;
-  float          xRotation;
-  LightLocs      locs;
+  int            id;                                  // Light id
+  Matrix         matLight;                            // Light model matrix
+  ShadowMap     *shadowMap;                           // Shadow map for the light
+  Vector3        position       = {0.0f, 0.0f, 0.0f}; // Position of the light
+  Vector3        direction      = {0.0f, 0.0f, 0.0f}; // Direction of the light
+  Vector3        color          = {1.0f, 1.0f, 1.0f}; // Light color
+  Vector3        specular       = {1.0f, 1.0f, 1.0f}; // Specular color
+  float          size           = 0.0f;               // Size of the light
+  float          energy         = 0.0f;               // Light intensity
+  float          innerCutOff    = 0.0f;               // Attenuation factors
+  float          outerCutOff    = 0.0f;               // Attenuation factors
+  float          constant       = 0.0f;               // Attenuation factors
+  float          linear         = 0.0f;               // Attenuation factors
+  float          quadratic      = 0.0f;               // Attenuation factors
+  float          shadowMapTxlSz = 0.0f;               // Texture size of the shadow map
+  float          depthBias      = 0.0f;               // Bias to apply to the shadow map
+  int            type;                                // 0 = point, 1 = directional, 2 = spot
+  int            shadow;                              // 0 = no shadow, 1 = shadow
+  int            enabled;                             // 0 = disabled, 1 = enabled
+  Shader        *shader;                              // Shader to use for the light
+  CameraService *camera;                              // Camera to use for the light
+  float          xRotation;                           // Rotation around the x axis
+  LightLocs      locs;                                // Locations of the light in the shader
 
   public:
   explicit Light(Shader *shader, int id = 0)
@@ -169,7 +169,7 @@ class Light
     SetShaderValue(*shader, locs.size, &size, SHADER_UNIFORM_FLOAT);
   }
 
-  void UpdateVpMatrix()
+  void UpdateMatLight()
   {
     camera->Update();
     matLight = MatrixMultiply(camera->view, camera->projection);
@@ -177,7 +177,7 @@ class Light
 
   void UpdateShadowMap() { SetShaderValueTexture(*shader, locs.shadowMap, shadowMap->texture); }
 
-  Matrix GetVpMatrix() const { return matLight; }
+  Matrix GetMatLight() const { return matLight; }
 
   Vector3 GetPosition() const { return position; }
 

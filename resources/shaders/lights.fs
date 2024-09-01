@@ -1,5 +1,6 @@
-#version 330
-
+#version 300 es
+precision mediump float;
+precision mediump int;
 #define NUM_LIGHTS              4
 #define NUM_MATERIAL_MAPS       7
 #define NUM_MATERIAL_CUBEMAPS   2
@@ -35,14 +36,14 @@ struct MaterialMap {
     sampler2D texture;
     mediump vec4 color;
     mediump float value;
-    lowp int active;
+    lowp int isactive;
 };
 
 struct MaterialCubemap {
     samplerCube texture;
     mediump vec4 color;
     mediump float value;
-    lowp int active;
+    lowp int isactive;
 };
 
 struct Light {
@@ -63,7 +64,7 @@ struct Light {
     float depthBias;              ///< Bias value to avoid self-shadowing artifacts
     lowp int type;                ///< Type of the light (e.g., point, directional, spotlight)
     lowp int shadow;              ///< Indicates if the light casts shadows (1 for true, 0 for false)
-    lowp int enabled;             ///< Indicates if the light is active (1 for true, 0 for false)
+    lowp int enabled;             ///< Indicates if the light is isactive (1 for true, 0 for false)
 };
 
 uniform MaterialCubemap cubemaps[NUM_MATERIAL_CUBEMAPS];
@@ -176,7 +177,7 @@ void main() {
     
     // Compute fragTexCoord (UV), apply parallax if height map is enabled
     vec2 uv = fragTexCoord;
-    if(maps[HEIGHT].active != 0) {
+    if(maps[HEIGHT].isactive != 0) {
         uv = (parallaxMinLayers > 0 && parallaxMaxLayers > 1) ? DeepParallax(uv, V) : Parallax(uv, V);
         
         if(uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) {
@@ -186,24 +187,24 @@ void main() {
     
     // Compute albedo (base color) by sampling the texture and multiplying by the diffuse color
     vec3 albedo = maps[ALBEDO].color.rgb * fragColor.rgb;
-    if(maps[ALBEDO].active != 0)
+    if(maps[ALBEDO].isactive != 0)
     albedo *= texture(maps[ALBEDO].texture, uv).rgb;
     
     // Compute metallic factor; if a metalness map is used, sample it
     float metalness = maps[METALNESS].value;
-    if(maps[METALNESS].active != 0)
+    if(maps[METALNESS].isactive != 0)
     metalness *= texture(maps[METALNESS].texture, uv).b;
     
     // Compute roughness factor; if a roughness map is used, sample it
     float roughness = maps[ROUGHNESS].value;
-    if(maps[ROUGHNESS].active != 0)
+    if(maps[ROUGHNESS].isactive != 0)
     roughness *= texture(maps[ROUGHNESS].texture, uv).g;
     
     // Compute F0 (reflectance at normal incidence) based on the metallic factor
     vec3 F0 = ComputeF0(metalness, 0.5, albedo);
     
     // Compute the normal vector; if a normal map is used, transform it to tangent space
-    vec3 N = (maps[NORMAL].active == 0) ? normalize(fragNormal) : normalize(TBN * (texture(maps[NORMAL].texture, uv).rgb * 2.0 - 1.0));
+    vec3 N = (maps[NORMAL].isactive == 0) ? normalize(fragNormal) : normalize(TBN * (texture(maps[NORMAL].texture, uv).rgb * 2.0 - 1.0));
     
     // Compute the dot product of the normal and view direction
     float NdotV = dot(N, V);
@@ -305,14 +306,14 @@ void main() {
     
     // Compute ambient
     vec3 ambient = colAmbient;
-    if(cubemaps[IRRADIANCE].active != 0) {
+    if(cubemaps[IRRADIANCE].isactive != 0) {
         vec3 kS = F0 + (1.0 - F0) * SchlickFresnel(cNdotV);
         vec3 kD = (1.0 - kS) * (1.0 - metalness);
         ambient = kD * texture(cubemaps[IRRADIANCE].texture, N).rgb;
     }
     
     // Compute ambient occlusion
-    if(maps[OCCLUSION].active != 0) {
+    if(maps[OCCLUSION].isactive != 0) {
         float ao = texture(maps[OCCLUSION].texture, uv).r;
         ambient *= ao;
         
@@ -322,7 +323,7 @@ void main() {
     }
     
     // Skybox reflection
-    if(cubemaps[CUBEMAP].active != 0) {
+    if(cubemaps[CUBEMAP].isactive != 0) {
         vec3 reflectCol = texture(cubemaps[CUBEMAP].texture, reflect(-V, N)).rgb;
         specLighting = mix(specLighting, reflectCol, 1.0 - roughness);
     }
@@ -332,10 +333,10 @@ void main() {
     
     // Compute emission color; if an emissive map is used, sample it
     vec3 emission = maps[EMISSION].color.rgb;
-    if(maps[EMISSION].active != 0) {
+    if(maps[EMISSION].isactive != 0) {
         emission *= texture(maps[EMISSION].texture, uv).rgb;
     }
     
     // Compute the final fragment color by combining diffuse, specular, and emission contributions
     outColor = vec4(diffuse + specLighting + emission, 1.0);
-};
+}

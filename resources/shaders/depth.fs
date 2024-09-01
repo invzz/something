@@ -1,5 +1,6 @@
-#version 330
-
+#version 300 es
+precision mediump float;
+precision mediump int;
 in vec2 fragTexCoord;
 
 // Output fragment color

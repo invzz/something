@@ -1,4 +1,6 @@
-#version 330
+#version 300 es
+precision mediump float;
+precision mediump int;
 
 #define NUM_LIGHTS 4   ///< Indicate the desired number of lights
 
@@ -40,4 +42,4 @@ void main() {
     }
     
     gl_Position = mvp*vec4(vertexPosition, 1.0);
-};
+}

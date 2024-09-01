@@ -1,21 +1,44 @@
 cmake_minimum_required(VERSION 3.29)
 
-set(APP_NAME something)
+set(PRELOAD_FILES "${PROJECT_SOURCE_DIR}/resources/")
+if (EMSCRIPTEN)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY -s GL_ENABLE_GET_PROC_ADDRESS=1 --preload-file ${PRELOAD_FILES}@resources -sALLOW_MEMORY_GROWTH")
+    set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so that you can directly open it.
+endif ()
+include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
+set(BUILD_GAMES    OFF CACHE BOOL "" FORCE) # don't build the supplied example games
+
+FetchContent_Declare(
+    raylib
+    GIT_REPOSITORY "https://github.com/raysan5/raylib.git"
+    GIT_TAG "master"
+    GIT_PROGRESS TRUE
+
+)
+FetchContent_MakeAvailable(raylib)
 
 include_directories(src/models)
 include_directories(src/services)
 include_directories(src/locations)
 include_directories(src/config)
 
-add_executable(${APP_NAME} src/multi.cc )
+set(APP_NAME "main")
+
+add_executable(${APP_NAME} src/main.cc )
+
+message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
 
 target_link_libraries(${APP_NAME} PRIVATE raylib  )
 
+
 add_compile_definitions(-DRES_DIR="${RES_DIR}")
 add_compile_definitions(-DAPP_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-add_compile_definitions(-DSHADER_DIR="${PROJECT_SOURCE_DIR}/resources/shaders/")
-add_compile_definitions(-DTEXTURE_DIR="${PROJECT_SOURCE_DIR}/resources/textures/")
-add_compile_definitions(-DSKYBOX_DIR="${PROJECT_SOURCE_DIR}/resources/skybox/sky/")
+add_compile_definitions(-DSHADER_DIR="resources/shaders/")
+add_compile_definitions(-DTEXTURE_DIR="resources/textures/")
+add_compile_definitions(-DSKYBOX_DIR="$resources/skybox/dam/")
 # uncomment to use nvidia gpu
-add_compile_definitions(-DUSE_NVIDIA)
-add_compile_definitions(-DPLATFORM_DESKTOP)
+# add_compile_definitions(-DUSE_NVIDIA)
+# add_compile_definitions(-DPLATFORM_DESKTOP)
+
